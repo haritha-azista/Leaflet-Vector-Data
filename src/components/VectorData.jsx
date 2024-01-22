@@ -169,6 +169,7 @@ const VectorData = () => {
     const _onDeleted = (e) => {
         console.log(e);
     }
+    
     // My component functional component which defines the functionality to show lat lng values on hover effect
     function MyComponent() {
         const map = useMapEvents({
@@ -186,6 +187,7 @@ const VectorData = () => {
         divElement.textContent = `${latValue} | ${lngValue}`;
         divElement.classList.add('custom-div-class-v');
     }, [lat, lng]);
+    
     //function to handle the submit of form details we entering when layer is created which contains information about created layer
     const handleFormSubmit = () => {
         // getting the values entered in the form
@@ -234,9 +236,10 @@ const VectorData = () => {
     };
     // function to handle the features export as json file
     const geojsonExport = () => {
-        // Create a copy of the feature collection
+        
+        // Create a copy of the feature collection to add entered form values as properties
         const exportedData = { ...featureCollection };
-        // Add or create properties for each feature
+        // Add properties for each feature
         exportedData.features.forEach((feature, index) => {
             const matchingPopupData = popupData[index];
             console.log(matchingPopupData);
@@ -257,6 +260,7 @@ const VectorData = () => {
     useEffect(() => {
         console.log(Json);
     }, [Json]);
+    
     // function to handle the conversion of features to the shapefile
     const handleConvertToShapefile = () => {
         // Make sure the server endpoint is correctly implemented
