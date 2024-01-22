@@ -186,6 +186,7 @@ const VectorData = () => {
         divElement.textContent = `${latValue} | ${lngValue}`;
         divElement.classList.add('custom-div-class-v');
     }, [lat, lng]);
+
     //function to handle the submit of form details we entering when layer is created which contains information about created layer
     const handleFormSubmit = () => {
         // getting the values entered in the form
@@ -232,11 +233,12 @@ const VectorData = () => {
         document.getElementById('input_m').value = selectedVector.measure;
         updatePopupContent(selectedVector.VectorId, selectedVector.name, selectedVector.description, selectedVector.measure);
     };
+
     // function to handle the features export as json file
     const geojsonExport = () => {
-        // Create a copy of the feature collection
+        // Creat a copy of the feature collection
         const exportedData = { ...featureCollection };
-        // Add or create properties for each feature
+        // Adding properties for each feature
         exportedData.features.forEach((feature, index) => {
             const matchingPopupData = popupData[index];
             console.log(matchingPopupData);
