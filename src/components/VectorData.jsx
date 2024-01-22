@@ -263,7 +263,7 @@ const VectorData = () => {
     
     // function to handle the conversion of features to the shapefile
     const handleConvertToShapefile = () => {
-        // Make sure the server endpoint is correctly implemented
+        // sending the post request to backend server and passing features as input as we want to covert features to shapefile 
         axios.post('http://127.0.0.1:5000/convertToShapefile', { features: featureCollection.features })
             .then((response) => {
                 console.log(response.data.message);
