@@ -82,7 +82,6 @@ const VectorData = () => {
             'Measure: ' + measure +
             '</div>';
         const layers = featureGroupRef.current.getLayers();
-        console.log('Layers:', layers);
         layers.forEach((layer) => {
             console.log(layer.id);
         })
@@ -223,7 +222,7 @@ const VectorData = () => {
     };
     // function to edit the poopup content it takes id of the layer as input
     const editPopupContent = (selectedVectorId) => {
-        console.log(selectedVectorId);
+        // console.log(selectedVectorId);
         // getting the layer we want to edit
         const selectedVector = popupData.find(entry => entry.VectorId === selectedVectorId);
         // updating the values after edit
