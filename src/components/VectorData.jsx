@@ -41,6 +41,7 @@ const VectorData = () => {
             }));
             createTooltip(createdLayer);
             createFormPopup(createdLayer);
+            
         }
     }
     const _onEdited = (e) => {
@@ -68,7 +69,7 @@ const VectorData = () => {
             '<input type="button" value="data" id="submit">' +
             '</div>';
         layer.bindPopup(popupContent).openPopup();
-
+        
     };
 
     // function to update popup content based on entered form values
@@ -82,11 +83,9 @@ const VectorData = () => {
             'Measure: ' + measure +
             '</div>';
         const layers = featureGroupRef.current.getLayers();
-        layers.forEach((layer) => {
-            console.log(layer.id);
-        })
-
+        console.log('Layers:', layers);
         const currentLayer = layers.pop();
+
         if (currentLayer instanceof L.Polygon) {
             currentLayer.setPopupContent(popupContent);
         }
@@ -97,6 +96,8 @@ const VectorData = () => {
             currentLayer.setPopupContent(popupContent);
         }
     };
+
+  
     // function to create a Tooltip which contains layer measurment
     const createTooltip = (layer) => {
         if (layer instanceof L.Polygon) {
@@ -110,7 +111,8 @@ const VectorData = () => {
         else if (layer instanceof L.Circle) {
             const radius = layer.getRadius();
             const area = Math.PI * Math.pow(radius, 2);
-            const toolContent = `${area.toFixed(2)} sq m`;
+            const ar = area/10000
+            const toolContent = `${ar.toFixed(2)} ha`;
             layer.bindTooltip(toolContent.toString(), { permanent: true, direction: "center" }).openTooltip();
         }
         else if (layer instanceof L.Polyline) {
@@ -144,7 +146,8 @@ const VectorData = () => {
         else if (layer instanceof L.Circle) {
             const editedradius = layer.getRadius();
             const area = Math.PI * Math.pow(editedradius, 2);
-            const toolContent = `${area.toFixed(2)} sq m`;
+            const ar = area/10000
+            const toolContent = `${ar.toFixed(2)} ha`;
             layer.bindTooltip(toolContent.toString(), { permanent: true, direction: "center" }).openTooltip();
         }
         else if (layer instanceof L.Polyline) {
@@ -168,7 +171,6 @@ const VectorData = () => {
     const _onDeleted = (e) => {
         console.log(e);
     }
-    
     // My component functional component which defines the functionality to show lat lng values on hover effect
     function MyComponent() {
         const map = useMapEvents({
@@ -222,7 +224,7 @@ const VectorData = () => {
     };
     // function to edit the poopup content it takes id of the layer as input
     const editPopupContent = (selectedVectorId) => {
-        // console.log(selectedVectorId);
+        console.log(selectedVectorId);
         // getting the layer we want to edit
         const selectedVector = popupData.find(entry => entry.VectorId === selectedVectorId);
         // updating the values after edit
@@ -233,12 +235,12 @@ const VectorData = () => {
         updatePopupContent(selectedVector.VectorId, selectedVector.name, selectedVector.description, selectedVector.measure);
     };
 
+   
     // function to handle the features export as json file
     const geojsonExport = () => {
-        // Creat a copy of the feature collection
-        // Create a copy of the feature collection to add entered form values as properties
+        // Create a copy of the feature collection
         const exportedData = { ...featureCollection };
-        // Add properties for each feature
+        // Add or create properties for each feature
         exportedData.features.forEach((feature, index) => {
             const matchingPopupData = popupData[index];
             console.log(matchingPopupData);
@@ -259,10 +261,9 @@ const VectorData = () => {
     useEffect(() => {
         console.log(Json);
     }, [Json]);
-    
     // function to handle the conversion of features to the shapefile
     const handleConvertToShapefile = () => {
-        // sending the post request to backend server and passing features as input as we want to covert features to shapefile 
+        // Make sure the server endpoint is correctly implemented
         axios.post('http://127.0.0.1:5000/convertToShapefile', { features: featureCollection.features })
             .then((response) => {
                 console.log(response.data.message);
@@ -274,78 +275,91 @@ const VectorData = () => {
 
 
     return (
-        <div >
-            <div className='divMapContainer'>
-                <MapContainer className='mapContainerMain'
-                    center={{ lat: 17.0000, lng: 78.0000 }}
-                    zoom={9}
-                    scrollWheelZoom={true}
-                    measureControl={true}
-                    whenCreated={(map) => {
-                        // Set the mapRef when the map is created
-                        mapRef.current = map;
-                    }}
-                    ref={mapR}
-                >
-                    <FeatureGroup ref={featureGroupRef}>
-                        <EditControl
-                            position="topright"
-                            onEdited={_onEdited}
-                            onCreated={_onCreated}
-                            onDeleted={_onDeleted}
-                            draw={{
-                                rectangle: true,
-                                polygon: {
-                                    showArea: true,
-                                    clickable: true,
-                                    metric: false,
-                                    allowIntersection: false
-                                },
-                                polyline: true,
-                                circlemarker: true,
-                                circle: true,
-                                showMeasurements: true
-                            }}
+        <div>
+            <div className="mapForm">
+                <div className='divMapContainer'>
+                    <MapContainer className='mapContainerMain'
+                        center={{ lat: 17.0000, lng: 78.0000 }}
+                        zoom={9}
+                        scrollWheelZoom={true}
+                        measureControl={true}
+                        whenCreated={(map) => {
+                            // Set the mapRef when the map is created
+                            mapRef.current = map;
+                        }}
+                        ref={mapR}
+                    >
+                        <FeatureGroup ref={featureGroupRef}>
+                            <EditControl
+                                position="topright"
+                                onEdited={_onEdited}
+                                onCreated={_onCreated}
+                                onDeleted={_onDeleted}
+                                draw={{
+                                    rectangle: true,
+                                    polygon: {
+                                        showArea: true,
+                                        clickable: true,
+                                        metric: false,
+                                        allowIntersection: false
+                                    },
+                                    polyline: true,
+                                    circlemarker: true,
+                                    circle: true,
+                                    showMeasurements: true
+                                }}
+                            />
+                        </FeatureGroup>
+                        <TileLayer
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | GIS Simplified contributors'
+                            url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
                         />
-                    </FeatureGroup>
-                    <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | GIS Simplified contributors'
-                        url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-                    />
-                    <LayersControl position='topleft'>
-                        <LayersControl.Overlay unchecked name='WorldstreetMap'>
-                            <TileLayer
-                                attribution='&copy; Esri &mdash; Source: Esri'
-                                url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}.png'
-                            />
-                        </LayersControl.Overlay>
-                        <LayersControl.Overlay unchecked name='WorldNightMap'>
-                            <TileLayer
-                                attribution='&copy; Esri &mdash; Source: Esri'
-                                url='https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default//GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpg'
-                            />
-                        </LayersControl.Overlay>
-                        <LayersControl.Overlay unchecked name='WorldimgMap'>
-                            <TileLayer
-                                attribution='&copy; Esri &mdash; Source: Esri'
-                                url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png'
-                            />
-                        </LayersControl.Overlay>
-                    </LayersControl>
-                    <MyComponent />
-                </MapContainer>
-            </div>
-            <div ref={divRef} className='custom-div-class'  ></div>
-
-            <div className='formPopup' style={{ border: '2ps solid' }}>
-                <h5 id='formHeading'>Attribute Values and PopupData</h5>
-                ID<input type='number' id='input_i' /> <br />
-                Name<input type='text' id='input_n' /><br />
-                Description<input type='text' id='input_d' /><br />
-                Measure<input type='text' id='input_m' /> <br />
-                <input type='button' id='input_b' value='Datasubmit' onClick={() => { handleFormSubmit() }} />
+                        <LayersControl position='topleft'>
+                            <LayersControl.Overlay unchecked name='WorldstreetMap'>
+                                <TileLayer
+                                    attribution='&copy; Esri &mdash; Source: Esri'
+                                    url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}.png'
+                                />
+                            </LayersControl.Overlay>
+                            <LayersControl.Overlay unchecked name='WorldNightMap'>
+                                <TileLayer
+                                    attribution='&copy; Esri &mdash; Source: Esri'
+                                    url='https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default//GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpg'
+                                />
+                            </LayersControl.Overlay>
+                            <LayersControl.Overlay unchecked name='WorldimgMap'>
+                                <TileLayer
+                                    attribution='&copy; Esri &mdash; Source: Esri'
+                                    url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png'
+                                />
+                            </LayersControl.Overlay>
+                        </LayersControl>
+                        <MyComponent />
+                    </MapContainer>
+                    <div ref={divRef} className='custom-div-class'  ></div>
+                </div>
+                <div className="formButtons">
+                    <div className='formPopup' style={{ border: '2ps solid' }}>
+                        <h5 id='formHeading'>Attribute Values and PopupData</h5>
+                        ID<input type='number' id='input_i' required /> <br />
+                        Name<input type='text' id='input_n' required /><br />
+                        Description<input type='text' id='input_d' required /><br />
+                        Measure<input type='text' id='input_m' required /> <br />
+                        <input type='button' id='input_b' value='Datasubmit' onClick={() => { handleFormSubmit() }} />
+                    </div>
+                    <div className='buttonC'>
+                        <button className='jsonButtton' onClick={() => { geojsonExport() }} >
+                            JSON
+                        </button>
+                        <button className='shapefileButtton' onClick={() => { handleConvertToShapefile() }} >
+                            Shapefile
+                        </button>
+                    </div>
+                </div>
             </div>
             <div>
+                <br />
+                <br />
                 <br />
                 <h5 className='tableHeading'>Attribute Table</h5>
                 {tableData && <Table striped bordered hover variant='dark' style={{ margin: '20px' }}>
@@ -375,12 +389,7 @@ const VectorData = () => {
                 </Table>
                 }
             </div>
-            <button className='jsonButtton' onClick={() => { geojsonExport() }} >
-                JSON
-            </button>
-            <button className='shapefileButtton' onClick={() => { handleConvertToShapefile() }} >
-                Shapefile
-            </button>
+
         </div>
     )
 }

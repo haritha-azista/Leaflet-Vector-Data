@@ -1,19 +1,29 @@
 /* styles.css */
-
 .formPopup {
     /* border: 2px solid #dfdfdf; */
+    margin-top: 80px;
     padding: 15px;
     border-radius: 10px;
-    max-width: 280px;
-    margin: auto;
     box-shadow: 2px -2px #458378;
-    margin-bottom: 10px;
+    margin-bottom: 25px;
     background-image: linear-gradient(130deg, rgb(116, 155, 106), rgb(81, 137, 155));
-    position:absolute;
-    top: 10px;
-    right: 10vw;
+    margin-right: 10px;
+    max-width: 250px;  
 }
-
+.formButtons{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.buttonC{
+    margin-left: auto;
+    margin-right: auto;
+}
+.mapForm{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
 #formHeading,.tableHeading {
     text-align: center;
     margin-bottom: 14px;
@@ -33,28 +43,22 @@
     margin-bottom: 8px;
     box-sizing: border-box;
 }
-
 #input_b {
-    width: 60%;
-    padding: 8px;
-    background-color: #277580;
+    background-color: #373d37;
     color: white;
-    border-color: rgb(102, 156, 160);
+    border-color: rgb(146, 178, 180);
     border-radius: 6px;
     cursor: pointer;
-    margin-left: 8vh;
 }
 
 
 .divMapContainer {
-    /* height: 100%; */
-    position: relative;
-    height: 700px;
-    width: 80%;
+   
+    height: 600px;
+    width: 60vw;
 }
 
 .mapContainerMain {
-    /* height: 40%; */
     position: relative;
     height: inherit;
     width: inherit;
@@ -66,27 +70,28 @@
     bottom: 0px;
     left: 0
 }
-.jsonButtton{
-    position:absolute;
-    bottom: 170px;
-    right: 25vw;
+.divMapContainer,.formdiv{
+    display: flex;
+    flex-direction: row;
+}
+.jsonButtton,.uploadButton{
     padding: 4px;
     background-color: #277580;
     border-color: azure;
     color: white;
     border-radius: 6px;
     cursor: pointer;
-    height: 35px;
+    margin-right: 15px;
+    /* height: 35px; */
 }
-.shapefileButtton{
-    position:absolute;
-    bottom: 170px;
-    right: 18vw;
+.shapefileButtton,.jsonExpButton{
+   
     padding: 4px;
     background-color: #4d774b;
     border-color: azure;
     color: white;
     border-radius: 6px;
     cursor: pointer;
-    height: 35px;
+    /* height: 35px; */
 }
+
